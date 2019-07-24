@@ -50,6 +50,10 @@ public class Account {
 	}
 	public void setBranch(String branch) {
 		Branch = branch;
+		
+		
+		
+		
 	}
 	public String getEmail() {
 		return email;

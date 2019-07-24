@@ -1,7 +1,5 @@
 package com.HCL.Demo1.Service;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -9,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.HCL.Demo1.Dto.AccountDto;
+import com.HCL.Demo1.Dto.ResponseDto;
 import com.HCL.Demo1.Model.Account;
 import com.HCL.Demo1.Repository.AccountRepository;
 
@@ -23,7 +22,6 @@ public class AccountServiceImpl implements AccountService{
 	public void insertAccount(AccountDto account) {
 		
 		Account acc = new Account();
-		Account acc1 = new Account();
 		acc.setAccountHolder(account.getAccountHolder());
 		acc.setAccountNo(account.getAccountNo());
 		acc.setBranch(account.getBranch());
@@ -32,9 +30,30 @@ public class AccountServiceImpl implements AccountService{
 		acc.setIfsc(account.getIfsc());
 		acc.setMobile(account.getMobile());
 		Long accountNo = account.getAccountNo();
-	//	List<Account> aaccount = accountRepository.findByAccountNoOrderByVersionDesc(accountNo);
-		//acc.setVersion(aaccount.get(0).getVersion() + 1);
+		List<Account> accountList = accountRepository.findByAccountNoOrderByVersionDesc(accountNo);
+		if(accountList == null || accountList.isEmpty()) {
+			acc.setVersion(1);
+		}
+		else {
+		acc.setVersion(accountList.get(0).getVersion() + 1);
+		}
 		accountRepository.save(acc);
+	}
+
+	@Override
+	public ResponseDto fetchAccountDetailsAccount(Long accountNo) {
+		ResponseDto responseDto = new ResponseDto();
+		List<Account> accountList = accountRepository.findByAccountNoOrderByVersionDesc(accountNo);
+		responseDto.setAccountList(accountList);
+		return responseDto;
+	}
+
+	@Override
+	public ResponseDto fetchAllAccountDetails() {
+		ResponseDto responseDto = new ResponseDto();
+		List<Account> accountList = accountRepository.findAll();
+		responseDto.setAccountList(accountList);
+		return responseDto;
 	}
 
 }
